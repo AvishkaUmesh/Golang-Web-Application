@@ -6,30 +6,40 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+
+	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/config"
 )
+
+var app *config.AppConfig
+
+// NewTemplate sets the config for the template package
+func NewTemplate(a *config.AppConfig) {
+	app = a
+}
 
 // RenderTemplate renders a template
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
-	// create template cache
-	templateCache, err := createTemplateCache()
+	var templateCache map[string]*template.Template
 
-	if err != nil {
-		fmt.Println("Error creating template cache :", err)
-		return
+	if app.UseCache {
+		// get the template cache from the app config
+		templateCache = app.TemplateCache
+	} else {
+		templateCache, _ = CreateTemplateCache()
 	}
 
 	// get requested template from cache
 	template, ok := templateCache[tmpl]
 
 	if !ok {
-		fmt.Println("Error getting template from cache :", err)
+		fmt.Println("Error getting template from cache")
 		return
 	}
 
 	buf := new(bytes.Buffer)
 
-	err = template.Execute(buf, nil)
+	err := template.Execute(buf, nil)
 
 	if err != nil {
 		fmt.Println("Error executing template :", err)
@@ -45,7 +55,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	templateCache := map[string]*template.Template{}
 
 	// get all pages from templates folder

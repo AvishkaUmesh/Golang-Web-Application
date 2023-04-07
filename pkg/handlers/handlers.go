@@ -3,15 +3,36 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/config"
 	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/render"
 )
 
+// Repository is the repository type
+type Repository struct {
+	App *config.AppConfig
+}
+
+// Repo is the repository used by the handlers
+var Repo *Repository
+
+// NewRepo creates a new repository
+func NewRepo(a *config.AppConfig) *Repository {
+	return &Repository{
+		App: a,
+	}
+}
+
+// NewHandlers sets the repository for the handlers
+func NewHandlers(r *Repository) {
+	Repo = r
+}
+
 // Home is a function to handle home page
-func Home(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "home.page.html")
 }
 
 // About is a function to handle about page
-func About(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "about.page.html")
 }
