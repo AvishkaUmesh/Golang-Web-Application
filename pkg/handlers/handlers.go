@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/config"
+	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/models"
 	"github.com/AvishkaUmesh/Golang-Web-Application/pkg/render"
 )
 
@@ -29,10 +30,17 @@ func NewHandlers(r *Repository) {
 
 // Home is a function to handle home page
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.html")
+	render.RenderTemplate(w, "home.page.html", &models.TemplateData{})
 }
 
 // About is a function to handle about page
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.html")
+
+	// perform some logic
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello, again."
+
+	render.RenderTemplate(w, "about.page.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
